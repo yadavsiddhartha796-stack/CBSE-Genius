@@ -1,0 +1,7 @@
+{
+  "name": "EduGenius AI",
+  "description": "AI-powered learning platform for CBSE Classes 1–12 with homework scanner, AI tutor, personalised learning, quizzes, and study planning.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

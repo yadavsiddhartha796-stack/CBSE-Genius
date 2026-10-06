@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // User Profile Document
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidId(userId);
+      allow delete: if isOwner(userId);
+
+      // Quiz Results Subcollection
+      match /quizResults/{quizResultId} {
+        allow read, write: if isOwner(userId) && isValidId(quizResultId);
+      }
+
+      // Homework Scans Subcollection
+      match /homeworkScans/{scanId} {
+        allow read, write: if isOwner(userId) && isValidId(scanId);
+      }
+
+      // Mistake Book Subcollection
+      match /mistakes/{mistakeId} {
+        allow read, write: if isOwner(userId) && isValidId(mistakeId);
+      }
+
+      // Weekly Reports Subcollection
+      match /weeklyReports/{reportId} {
+        allow read, write: if isOwner(userId) && isValidId(reportId);
+      }
+    }
+
+    // Public Academic Leaderboard Collection
+    match /leaderboard/{studentId} {
+      allow read: if true;
+      allow create, update: if isSignedIn() && (request.auth.uid == studentId || !('id' in request.resource.data) || request.resource.data.id == request.auth.uid);
+      allow delete: if isSignedIn() && request.auth.uid == studentId;
+    }
+
+    // Connection testing doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

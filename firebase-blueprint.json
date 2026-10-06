@@ -1,0 +1,135 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Registered CBSE student or educator profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique user identifier" },
+        "name": { "type": "string", "description": "Scholar full name" },
+        "email": { "type": "string", "format": "email", "description": "User email address" },
+        "classLevel": { "type": "string", "description": "CBSE class grade (Class 6 - Class 12)" },
+        "board": { "type": "string", "description": "Curriculum board (CBSE)" },
+        "role": { "type": "string", "enum": ["student", "parent", "educator"], "description": "Account role" },
+        "plan": { "type": "string", "enum": ["standard", "premium"], "description": "Subscription tier" },
+        "preferredLanguage": { "type": "string", "description": "Language preference" },
+        "xp": { "type": "number", "description": "Total academic XP accumulated" },
+        "level": { "type": "number", "description": "Scholar academic level" },
+        "streakDays": { "type": "number", "description": "Consecutive active days" },
+        "lastActiveDate": { "type": "string", "description": "Last active ISO date string" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Update timestamp" }
+      },
+      "required": ["uid", "name", "email", "classLevel", "role"]
+    },
+    "QuizResult": {
+      "title": "QuizResult",
+      "description": "Completed CBSE quiz assessment attempt",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique quiz result ID" },
+        "userId": { "type": "string", "description": "Student owner UID" },
+        "subject": { "type": "string", "description": "Academic subject" },
+        "chapter": { "type": "string", "description": "NCERT chapter name" },
+        "score": { "type": "number", "description": "Raw score obtained" },
+        "totalQuestions": { "type": "number", "description": "Total questions count" },
+        "percentage": { "type": "number", "description": "Accuracy percentage" },
+        "date": { "type": "string", "description": "Completion timestamp" }
+      },
+      "required": ["id", "userId", "subject", "chapter", "percentage"]
+    },
+    "HomeworkScan": {
+      "title": "HomeworkScan",
+      "description": "Evaluated worksheet or homework question scan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Scan submission ID" },
+        "userId": { "type": "string", "description": "Student owner UID" },
+        "subject": { "type": "string", "description": "Subject evaluated" },
+        "chapter": { "type": "string", "description": "Chapter assessed" },
+        "score": { "type": "number", "description": "Score out of 100" },
+        "status": { "type": "string", "description": "Evaluation verdict status" },
+        "createdAt": { "type": "string", "description": "Submission timestamp" }
+      },
+      "required": ["id", "userId", "subject", "chapter"]
+    },
+    "MistakeRecord": {
+      "title": "MistakeRecord",
+      "description": "Logged mistake archived in My Mistake Book",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Mistake entry ID" },
+        "userId": { "type": "string", "description": "Student owner UID" },
+        "question": { "type": "string", "description": "Question text" },
+        "studentAnswer": { "type": "string", "description": "Student incorrect answer" },
+        "correctAnswer": { "type": "string", "description": "Official correct answer" },
+        "explanation": { "type": "string", "description": "AI step explanation" },
+        "subject": { "type": "string", "description": "Academic subject" },
+        "chapter": { "type": "string", "description": "Chapter" },
+        "mastered": { "type": "boolean", "description": "Whether mistake has been remediated" },
+        "timestamp": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["id", "userId", "question", "studentAnswer", "correctAnswer"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public ranking record based on badges and quiz points",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Student ID" },
+        "name": { "type": "string", "description": "Student display name" },
+        "school": { "type": "string", "description": "School name" },
+        "city": { "type": "string", "description": "City" },
+        "classLevel": { "type": "string", "description": "Class grade" },
+        "totalPoints": { "type": "number", "description": "Total academic points" },
+        "badgesCount": { "type": "number", "description": "Badges earned" },
+        "quizzesCompleted": { "type": "number", "description": "Quizzes taken" },
+        "avgQuizScore": { "type": "number", "description": "Average quiz accuracy" },
+        "streakDays": { "type": "number", "description": "Active streak days" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "name", "classLevel", "totalPoints"]
+    },
+    "WeeklyReport": {
+      "title": "WeeklyReport",
+      "description": "Weekly study digest summary report",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Report ID" },
+        "userId": { "type": "string", "description": "Student UID" },
+        "weekRange": { "type": "string", "description": "Date range" },
+        "totalStudyMinutes": { "type": "number", "description": "Total study minutes" },
+        "quizzesCompleted": { "type": "number", "description": "Quizzes completed" },
+        "avgQuizScore": { "type": "number", "description": "Average score" },
+        "generatedAt": { "type": "string", "description": "Generated timestamp" }
+      },
+      "required": ["id", "userId", "weekRange"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profile and academic progress settings"
+    },
+    "/users/{userId}/quizResults/{quizResultId}": {
+      "schema": "QuizResult",
+      "description": "User specific CBSE quiz attempts and performance"
+    },
+    "/users/{userId}/homeworkScans/{scanId}": {
+      "schema": "HomeworkScan",
+      "description": "User specific homework evaluation records"
+    },
+    "/users/{userId}/mistakes/{mistakeId}": {
+      "schema": "MistakeRecord",
+      "description": "My Mistake Book persistent error records"
+    },
+    "/users/{userId}/weeklyReports/{reportId}": {
+      "schema": "WeeklyReport",
+      "description": "Dispatched weekly progress email digests"
+    },
+    "/leaderboard/{studentId}": {
+      "schema": "LeaderboardEntry",
+      "description": "Public academic leaderboard rankings for classroom and global competition"
+    }
+  }
+}
